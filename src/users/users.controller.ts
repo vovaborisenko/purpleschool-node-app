@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { BaseController } from '../common/base.controller';
+import { IUsersController } from './users.controller.interface';
 import { IControllerRoute } from '../common/route.interface';
 import { HTTPError } from '../errors/http-error.class';
 import { ILogger } from '../logger/logger.interface';
 import 'reflect-metadata';
 
 @injectable()
-export class UsersController extends BaseController {
+export class UsersController extends BaseController implements IUsersController {
     private routes: IControllerRoute[] = [
         {
             path: '/sign-in',
