@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { BaseController } from '../common/base.controller';
 import { IControllerRoute } from '../common/route.interface';
-import { LoggerService } from '../logger/logger.service';
 import { HTTPError } from '../errors/http-error.class';
+import { ILogger } from '../logger/logger.interface';
 
 export class UsersController extends BaseController {
     private routes: IControllerRoute[] = [
@@ -18,7 +18,7 @@ export class UsersController extends BaseController {
         }
     ];
 
-    constructor(logger: LoggerService) {
+    constructor(logger: ILogger) {
         super(logger);
         this.bindRoutes(this.routes);
     }
