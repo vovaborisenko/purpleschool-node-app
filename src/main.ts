@@ -1,17 +1,19 @@
+import { Container } from 'inversify';
 import { App } from './app';
-import { ExceptionFilter } from './errors/exception.filter';
-import { LoggerService } from './logger/logger.service';
-import { UsersController } from './users/users.controller';
+import { appBindings } from './inversify.config';
+import { TYPES } from './types';
 
-async function bootstrap() {
-    const logger = new LoggerService();
-    const app = new App(
-        logger,
-        new UsersController(logger),
-        new ExceptionFilter(logger)
-    );
+function bootstrap() {
+    const appContainer = new Container();
 
-    await app.init();
+    appContainer.load(appBindings);
+
+    const app = appContainer.get<App>(TYPES.Application);
+
+    app.init();
+
+    return { app, appContainer };
 }
 
-bootstrap();
+
+export const { app, appContainer } = bootstrap();
