@@ -10,30 +10,30 @@ import 'reflect-metadata';
 
 @injectable()
 export class UsersController extends BaseController implements IUsersController {
-    private routes: IControllerRoute[] = [
-        {
-            path: '/sign-in',
-            method: 'post',
-            func: this.login
-        },
-        {
-            path: '/sign-up',
-            method: 'post',
-            func: this.resister
-        }
-    ];
+  private routes: IControllerRoute[] = [
+    {
+      path: '/sign-in',
+      method: 'post',
+      func: this.login,
+    },
+    {
+      path: '/sign-up',
+      method: 'post',
+      func: this.resister,
+    },
+  ];
 
-    constructor(@inject(TYPES.ILogger) logger: ILogger) {
-        super(logger);
-        this.bindRoutes(this.routes);
-    }
+  constructor(@inject(TYPES.ILogger) logger: ILogger) {
+    super(logger);
+    this.bindRoutes(this.routes);
+  }
 
-    public login(req: Request, res: Response, next: NextFunction) {
-        next(new HTTPError(401, 'Ошибка авторизации', 'login'));
-        // this.ok(res, 'login');
-    }
+  public login(req: Request, res: Response, next: NextFunction): void {
+    next(new HTTPError(401, 'Ошибка авторизации', 'login'));
+    // this.ok(res, 'login');
+  }
 
-    public resister(req: Request, res: Response, next: NextFunction) {
-        this.ok(res, 'registration');
-    }
+  public resister(req: Request, res: Response, next: NextFunction): void {
+    this.ok(res, 'registration');
+  }
 }

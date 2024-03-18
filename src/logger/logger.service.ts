@@ -5,23 +5,23 @@ import 'reflect-metadata';
 
 @injectable()
 export class LoggerService implements ILogger {
-    private logger: Logger<ILogObj>;
+  private logger: Logger<ILogObj>;
 
-    constructor() {
-        this.logger = new Logger({
-            prettyLogTemplate: '{{dateIsoStr}} {{logLevelName}} '
-        });
-    }
+  constructor() {
+    this.logger = new Logger({
+      prettyLogTemplate: '{{dateIsoStr}} {{logLevelName}} ',
+    });
+  }
 
-    public log(...args: unknown[]) {
-        this.logger.info(...args);
-    }
+  public log(...args: unknown[]): void {
+    this.logger.info(...args);
+  }
 
-    public warn(...args: unknown[]) {
-        this.logger.warn(...args);
-    }
+  public warn(...args: unknown[]): void {
+    this.logger.warn(...args);
+  }
 
-    public error(...args: unknown[]) {
-        this.logger.error(...args);
-    }
+  public error(...args: unknown[]): void {
+    this.logger.error(...args);
+  }
 }
