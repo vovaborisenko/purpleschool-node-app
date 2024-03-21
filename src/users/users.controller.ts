@@ -8,6 +8,7 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { IControllerRoute } from '../common/route.interface';
 import { HTTPError } from '../errors/http-error.class';
 import { ILogger } from '../logger/logger.interface';
+import { UsersService } from './users.service';
 import 'reflect-metadata';
 
 @injectable()
@@ -25,7 +26,10 @@ export class UsersController extends BaseController implements IUsersController 
     },
   ];
 
-  constructor(@inject(TYPES.ILogger) logger: ILogger) {
+  constructor(
+    @inject(TYPES.ILogger) logger: ILogger,
+    @inject(TYPES.IUsersService) private usersService: UsersService,
+  ) {
     super(logger);
     this.bindRoutes(this.routes);
   }
@@ -36,7 +40,17 @@ export class UsersController extends BaseController implements IUsersController 
     // this.ok(res, 'login');
   }
 
-  public resister(req: Request<{}, {}, UserRegisterDto>, res: Response, next: NextFunction): void {
-    this.ok(res, 'registration');
+  public async resister(
+    { body }: Request<{}, {}, UserRegisterDto>,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const result = await this.usersService.createUser(body);
+
+    if (!result) {
+      return next(new HTTPError(422, 'Пользователь с таким email уже существует', 'register'));
+    }
+
+    this.ok(res, result);
   }
 }
