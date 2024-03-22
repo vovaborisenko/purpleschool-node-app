@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../types';
 import { BaseController } from '../common/base.controller';
+import { ValidateMiddleware } from '../common/validate.middleware';
 import { IUsersController } from './users.controller.interface';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRegisterDto } from './dto/user-register.dto';
@@ -23,7 +24,7 @@ export class UsersController extends BaseController implements IUsersController 
       path: '/sign-up',
       method: 'post',
       func: this.resister,
-      middlewares: [],
+      middlewares: [new ValidateMiddleware(UserRegisterDto)],
     },
   ];
 
