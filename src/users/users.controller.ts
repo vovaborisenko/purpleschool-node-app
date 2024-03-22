@@ -23,6 +23,7 @@ export class UsersController extends BaseController implements IUsersController 
       path: '/sign-up',
       method: 'post',
       func: this.resister,
+      middlewares: [],
     },
   ];
 
