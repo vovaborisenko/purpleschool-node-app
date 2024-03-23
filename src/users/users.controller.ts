@@ -28,6 +28,11 @@ export class UsersController extends BaseController implements IUsersController 
       func: this.resister,
       middlewares: [new ValidateMiddleware(UserRegisterDto)],
     },
+    {
+      path: '/info',
+      method: 'get',
+      func: this.info,
+    },
   ];
 
   constructor(
@@ -67,5 +72,9 @@ export class UsersController extends BaseController implements IUsersController 
     }
 
     this.ok(res, result);
+  }
+
+  public info({ user }: Request, res: Response, next: NextFunction): void {
+    this.ok(res, { user });
   }
 }

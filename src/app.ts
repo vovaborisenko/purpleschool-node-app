@@ -3,9 +3,11 @@ import { Server } from 'http';
 import { inject, injectable } from 'inversify';
 import { json } from 'body-parser';
 import { TYPES } from './types';
+import { AuthMiddleware } from './common/auth.middleware';
 import { UsersController } from './users/users.controller';
 import { ExceptionFilter } from './errors/exception.filter';
 import { ILogger } from './logger/logger.interface';
+import { IConfigService } from './config/config.service.interface';
 import { PrismaService } from './database/prisma.service';
 import 'reflect-metadata';
 
@@ -17,6 +19,7 @@ export class App {
 
   constructor(
     @inject(TYPES.ILogger) private logger: ILogger,
+    @inject(TYPES.IConfigService) private config: IConfigService,
     @inject(TYPES.PrismaService) private prismaService: PrismaService,
     @inject(TYPES.IUsersController) private users: UsersController,
     @inject(TYPES.IExceptionFilter) private exceptionFilter: ExceptionFilter,
@@ -26,7 +29,10 @@ export class App {
   }
 
   public useMiddlewares(): void {
+    const authMiddleware = new AuthMiddleware(this.config.get('SECRET'));
+
     this.app.use(json());
+    this.app.use(authMiddleware.execute.bind(authMiddleware));
   }
 
   public useRoutes(): void {
