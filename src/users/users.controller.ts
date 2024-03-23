@@ -10,6 +10,7 @@ import { IControllerRoute } from '../common/route.interface';
 import { HTTPError } from '../errors/http-error.class';
 import { ILogger } from '../logger/logger.interface';
 import { UsersService } from './users.service';
+import { IConfigService } from '../config/config.service.interface';
 import 'reflect-metadata';
 
 @injectable()
@@ -31,6 +32,7 @@ export class UsersController extends BaseController implements IUsersController 
 
   constructor(
     @inject(TYPES.ILogger) logger: ILogger,
+    @inject(TYPES.IConfigService) private config: IConfigService,
     @inject(TYPES.IUsersService) private usersService: UsersService,
   ) {
     super(logger);
@@ -45,10 +47,12 @@ export class UsersController extends BaseController implements IUsersController 
     const result = await this.usersService.validateUser(body);
 
     if (!result) {
-      next(new HTTPError(401, 'Ошибка авторизации', 'login'));
+      return next(new HTTPError(401, 'Ошибка авторизации', 'login'));
     }
 
-    this.ok(res, 'login');
+    const jwt = await this.usersService.signJWT(body.email, this.config.get('SECRET'));
+
+    this.ok(res, { jwt });
   }
 
   public async resister(
