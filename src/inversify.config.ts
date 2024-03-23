@@ -11,12 +11,15 @@ import { UsersService } from './users/users.service';
 import { IConfigService } from './config/config.service.interface';
 import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
+import { IUserRepository } from './users/users.repository.interface';
+import { UserRepository } from './users/users.repository';
 import { App } from './app';
 
 const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
   bind<IConfigService>(TYPES.IConfigService).to(ConfigService).inSingletonScope();
   bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
+  bind<IUserRepository>(TYPES.UserRepository).to(UserRepository).inSingletonScope();
 
   bind<IExceptionFilter>(TYPES.IExceptionFilter).to(ExceptionFilter);
   bind<IUsersController>(TYPES.IUsersController).to(UsersController);
