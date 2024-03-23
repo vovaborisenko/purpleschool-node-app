@@ -10,6 +10,7 @@ import { IControllerRoute } from '../common/route.interface';
 import { HTTPError } from '../errors/http-error.class';
 import { ILogger } from '../logger/logger.interface';
 import { UsersService } from './users.service';
+import { GuardMiddleware } from '../common/guard.middleware';
 import { IConfigService } from '../config/config.service.interface';
 import 'reflect-metadata';
 
@@ -32,6 +33,7 @@ export class UsersController extends BaseController implements IUsersController 
       path: '/info',
       method: 'get',
       func: this.info,
+      middlewares: [new GuardMiddleware()],
     },
   ];
 
@@ -74,7 +76,13 @@ export class UsersController extends BaseController implements IUsersController 
     this.ok(res, result);
   }
 
-  public info({ user }: Request, res: Response, next: NextFunction): void {
-    this.ok(res, { user });
+  public async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+    if (!user) {
+      return next(new HTTPError(404, 'Пользователя не существует', 'info'));
+    }
+
+    const executeUser = await this.usersService.findUser(user);
+
+    this.ok(res, { id: executeUser?.id, email: executeUser?.email });
   }
 }

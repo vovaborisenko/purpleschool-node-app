@@ -30,6 +30,10 @@ export class UsersService implements IUsersService {
     return this.userRepository.create(newUser);
   }
 
+  public async findUser(email: string): Promise<UserModel | null> {
+    return this.userRepository.find(email);
+  }
+
   public async validateUser({ email, password }: UserLoginDto): Promise<boolean> {
     const existedUser = await this.userRepository.find(email);
 
