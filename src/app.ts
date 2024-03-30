@@ -28,18 +28,18 @@ export class App {
     this.port = 8000;
   }
 
-  public useMiddlewares(): void {
+  private useMiddlewares(): void {
     const authMiddleware = new AuthMiddleware(this.config.get('SECRET'));
 
     this.app.use(json());
     this.app.use(authMiddleware.execute.bind(authMiddleware));
   }
 
-  public useRoutes(): void {
+  private useRoutes(): void {
     this.app.use('/users', this.users.router);
   }
 
-  public useExceptionFilters(): void {
+  private useExceptionFilters(): void {
     this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
@@ -50,5 +50,9 @@ export class App {
     await this.prismaService.connect();
     this.server = this.app.listen(this.port);
     this.logger.log(`Сервер запущен на http://localhost:${this.port}`);
+  }
+
+  public close(): void {
+    this.server.close();
   }
 }
